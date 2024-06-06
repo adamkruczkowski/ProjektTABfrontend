@@ -27,6 +27,7 @@ export enum PAGE_SIGNUP {
   AGE = "Wiek",
   PHONE = "Numer telefonu",
   EMAIL = "Email",
+  LOGIN = "Login",
   PASSWORD = "Hasło",
   REP_PASS = "Powtórz hasło",
 }

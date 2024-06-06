@@ -11,9 +11,9 @@ import {
   Link,
   Button,
 } from "@nextui-org/react";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { URL_PATHS } from "@/constants/enums";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { LOCAL_STORAGE, URL_PATHS } from "@/constants/enums";
 import { COMMON } from "@/constants/texts";
 import CompanyLogoIcon from "./icons/CompanyLogoIcon";
 
@@ -22,8 +22,20 @@ import CompanyLogoIcon from "./icons/CompanyLogoIcon";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (localStorage.getItem(LOCAL_STORAGE.LOGGED_CLIENT_ID)) {
+    } else {
+    }
+  }, []);
 
   const menuItems = [COMMON.MY_ACC, COMMON.TRANSFERS];
+
+  const logoutHandler = () => {
+    localStorage.removeItem(LOCAL_STORAGE.LOGGED_CLIENT_ID);
+    router.replace(URL_PATHS.LOGIN);
+  };
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-default-50">
@@ -39,47 +51,67 @@ const Header = () => {
           </p>
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem isActive={pathname === URL_PATHS.PROFILE}>
-          <Link href={URL_PATHS.PROFILE}>{COMMON.MY_ACC}</Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname === URL_PATHS.TRANSFERS}>
-          <Link href={URL_PATHS.TRANSFERS} aria-current="page">
-            {COMMON.TRANSFERS}
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      {localStorage.getItem(LOCAL_STORAGE.LOGGED_CLIENT_ID) && (
+        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarItem isActive={pathname.includes(URL_PATHS.PROFILE)}>
+            <Link
+              href={`${URL_PATHS.PROFILE}/${localStorage.getItem(
+                LOCAL_STORAGE.LOGGED_CLIENT_ID
+              )}`}
+            >
+              {COMMON.MY_ACC}
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={pathname.includes(URL_PATHS.TRANSFERS)}>
+            <Link
+              href={`${URL_PATHS.TRANSFERS}/${localStorage.getItem(
+                LOCAL_STORAGE.LOGGED_CLIENT_ID
+              )}`}
+              aria-current="page"
+            >
+              {COMMON.TRANSFERS}
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
+      )}
       <NavbarContent justify="end">
-        <NavbarItem>
-          <Button
-            as={Link}
-            color="default"
-            href={URL_PATHS.LOGIN}
-            variant="flat"
-          >
-            {COMMON.LOGIN}
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            as={Link}
-            color="primary"
-            href={URL_PATHS.SIGN_UP}
-            variant="flat"
-          >
-            {COMMON.SIGNUP}
-          </Button>
-        </NavbarItem>
-        <NavbarItem>
-          <Button
-            as={Link}
-            color="danger"
-            href={URL_PATHS.LOGIN}
-            variant="flat"
-          >
-            {COMMON.LOGOUT}
-          </Button>
-        </NavbarItem>
+        {!localStorage.getItem(LOCAL_STORAGE.LOGGED_CLIENT_ID) && (
+          <>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="default"
+                href={URL_PATHS.LOGIN}
+                variant="flat"
+              >
+                {COMMON.LOGIN}
+              </Button>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="primary"
+                href={URL_PATHS.SIGN_UP}
+                variant="flat"
+              >
+                {COMMON.SIGNUP}
+              </Button>
+            </NavbarItem>
+          </>
+        )}
+        {localStorage.getItem(LOCAL_STORAGE.LOGGED_CLIENT_ID) && (
+          <NavbarItem>
+            <Button
+              as={Link}
+              color="danger"
+              // href={URL_PATHS.LOGIN}
+              variant="flat"
+              onClick={logoutHandler}
+            >
+              {COMMON.LOGOUT}
+            </Button>
+          </NavbarItem>
+        )}
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (
