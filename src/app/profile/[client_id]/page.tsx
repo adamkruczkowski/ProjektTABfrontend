@@ -1,43 +1,34 @@
 "use client";
 
 import MyAxios from "@/app/lib/axios";
-import { Spinner } from "@nextui-org/react";
+import { BankingAccountSimpleType, ClientDataType } from "@/app/lib/interfaces";
+import BankingAccount from "@/components/profile/BankingAccount";
+import { Button, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 interface ClientProfileParams {
   params: any;
-}
-interface ClientDataType {
-  id: string;
-  name: string;
-  surname: string;
-  age: number;
-  email: string;
-  login: string;
-  phone: string;
-  bakingAccounts: {
-    id: string;
-    number: string;
-    amount: number;
-    blocked: string;
-  }[];
-  logins: {
-    id: string;
-    successful: boolean;
-    dateTime: string;
-  }[];
 }
 
 const ClientProfile = ({ params }: ClientProfileParams) => {
   const { client_id } = params;
   const [clientData, setClientData] = useState<null | ClientDataType>(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [bankingAccounts, setBankingAccounts] = useState<
+    BankingAccountSimpleType[]
+  >([]);
 
   useEffect(() => {
     setProfileLoading(true);
     MyAxios.get(`api/Client/${client_id}`).then((res) => {
-      console.log(res.data);
       setClientData(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    MyAxios.get(`api/BankingAccount/all/${client_id}`).then((res) => {
+      setBankingAccounts(res.data);
+      console.log(res.data);
     });
     setProfileLoading(false);
   }, []);
@@ -51,7 +42,7 @@ const ClientProfile = ({ params }: ClientProfileParams) => {
       <div className="w-full flex-1 my-3">
         <div className="flex flex-col items-center">
           <h2 className="font-bold text-xl">Twój Profil</h2>
-          <div className="flex flex-row gap-6">
+          <div className="flex flex-row gap-6 mt-2">
             <div className="text-red-500">
               <p>Imię i nazwisko</p>
               <p>Login</p>
@@ -69,6 +60,27 @@ const ClientProfile = ({ params }: ClientProfileParams) => {
               <p>{clientData.age}</p>
             </div>
           </div>
+        </div>
+        <div className="flex flex-col gap-4 justify-center m-8">
+          <Button variant="solid" color="primary" className="self-center">
+            <p className="text-white font-bold">Wyświetl wszystkie przelewy</p>
+          </Button>
+          <p className="text-center">
+            Aby wykonać przelew wejdź na konto bankowe z którego chcesz wykonać
+            przelew
+          </p>
+        </div>
+        <div className="my-5">
+          <h2 className="text-center text-lg font-bold">Konta bankowe</h2>
+          {bankingAccounts.map((ba) => (
+            <BankingAccount
+              key={ba.id}
+              amount={ba.amount}
+              blocked={ba.blocked}
+              number={ba.number}
+              id={ba.id}
+            />
+          ))}
         </div>
       </div>
     );

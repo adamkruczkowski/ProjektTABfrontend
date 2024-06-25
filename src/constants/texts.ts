@@ -8,7 +8,7 @@ export enum COMMON {
   LOGIN = "Zaloguj się",
   SIGNUP = "Załóż konto",
   LOGOUT = "Wyloguj się",
-  MY_ACC = "Moje konto",
+  MY_ACC = "Moje konta",
   TRANSFERS = "Przelewy",
 }
 
