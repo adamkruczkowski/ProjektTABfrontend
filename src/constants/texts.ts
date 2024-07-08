@@ -9,12 +9,12 @@ export enum COMMON {
   SIGNUP = "Załóż konto",
   LOGOUT = "Wyloguj się",
   MY_ACC = "Moje konta",
-  TRANSFERS = "Przelewy",
+  TRANSFERS = "Nowy przelew",
 }
 
 export enum AUTHORS {
   LJ = "Łukasz Jarząb",
-  KK = "Kuba Kos",
+  KK = "Jakub Kos",
   LP = "Łukasz Piórecki",
   BZ = "Bartosz Ziarnik",
   AK = "Adam Kruczkowski",
