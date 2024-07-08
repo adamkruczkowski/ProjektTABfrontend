@@ -30,4 +30,5 @@ export enum PAGE_SIGNUP {
   LOGIN = "Login",
   PASSWORD = "Hasło",
   REP_PASS = "Powtórz hasło",
+  FA = "Kod uwierzytelniajacy"
 }

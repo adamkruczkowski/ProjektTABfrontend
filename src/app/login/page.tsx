@@ -14,7 +14,7 @@ import {
   Snippet,
 } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyAxios from "../lib/axios";
 import { LOCAL_STORAGE, URL_PATHS } from "@/constants/enums";
 
@@ -22,33 +22,71 @@ const Login = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showError, setShowError] = useState(false);
+  const [is2FA, setIs2FA] = useState(false);
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    // Fetch the 2FA status from the server
+    const fetch2FAStatus = async () => {
+      try {
+        const response = await MyAxios.get("api/Authentication/is-2fa-enabled");
+        setIs2FAEnabled(response.data.is2FAEnabled);
+      } catch (error) {
+        console.error("Error fetching 2FA status:", error);
+      }
+    };
+
+    fetch2FAStatus();
+  }, []);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleReset = () => {
     setLogin("");
     setPassword("");
+    setVerificationCode("");
+    setIs2FA(false);
   };
 
   const handleSubmit = async () => {
-    MyAxios.post("api/Authentication/login", {
-      login,
-      password,
-    })
-      .then((res) => {
-        localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.id);
-        router.push(`${URL_PATHS.PROFILE}/${res.data.id}`);
-        // 2FA HERE
-        console.log(res);
+    if (is2FA) {
+      console.log(`Sending verification code: ${verificationCode}, Login: ${login}`);
+      MyAxios.post('api/Authentication/verify-code', {
+        login,
+        code: verificationCode,
       })
-      .catch((err) => {
-        setErrorMessage(err.response.data);
-        setShowError(true);
-      });
+        .then((res) => {
+          localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
+          router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
+        })
+        .catch((err) => {
+          setErrorMessage(err.response.data);
+          setShowError(true);
+        });
+    } else {
+      MyAxios.post('api/Authentication/login', {
+        login,
+        password,
+      })
+        .then((res) => {
+          if (is2FAEnabled) {
+            setIs2FA(true);
+            console.log(res);
+          } else {
+            localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
+            router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
+          }
+        })
+        .catch((err) => {
+          setErrorMessage(err.response.data);
+          setShowError(true);
+        });
+    }
   };
 
   return (
@@ -63,37 +101,51 @@ const Login = () => {
             {errorMessage}
           </Snippet>
         )}
-        <Input
-          type="text"
-          label={PAGE_SIGNUP.LOGIN}
-          value={login}
-          onChange={(e) => {
-            setShowError(false);
-            setLogin(e.target.value);
-          }}
-        />
-        <Input
-          label={PAGE_SIGNUP.PASSWORD}
-          value={password}
-          onChange={(e) => {
-            setShowError(false);
-            return setPassword(e.target.value);
-          }}
-          endContent={
-            <button
-              className="focus:outline-none"
-              type="button"
-              onClick={toggleVisibility}
-            >
-              {isVisible ? (
-                <PasswordEyeOff size={24} className="text-default-400" />
-              ) : (
-                <PasswordEyeOn size={24} className="text-default-400" />
-              )}
-            </button>
-          }
-          type={isVisible ? "text" : "password"}
-        />
+        {!is2FA ? (
+          <>
+            <Input
+              type="text"
+              label={PAGE_SIGNUP.LOGIN}
+              value={login}
+              onChange={(e) => {
+                setShowError(false);
+                setLogin(e.target.value);
+              }}
+            />
+            <Input
+              label={PAGE_SIGNUP.PASSWORD}
+              value={password}
+              onChange={(e) => {
+                setShowError(false);
+                return setPassword(e.target.value);
+              }}
+              endContent={
+                <button
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={toggleVisibility}
+                >
+                  {isVisible ? (
+                    <PasswordEyeOff size={24} className="text-default-400" />
+                  ) : (
+                    <PasswordEyeOn size={24} className="text-default-400" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
+            />
+          </>
+        ) : (
+          <Input
+            type="text"
+            label={PAGE_SIGNUP.FA}
+            value={verificationCode}
+            onChange={(e) => {
+              setShowError(false);
+              setVerificationCode(e.target.value);
+            }}
+          />
+        )}
       </CardBody>
       <CardFooter className="flex flex-row-reverse gap-2 ">
         <Button
