@@ -61,8 +61,8 @@ const Login = () => {
         code: verificationCode,
       })
         .then((res) => {
-          localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
-          router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
+          localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.id);
+          router.push(`${URL_PATHS.PROFILE}/${res.data.id}`);
         })
         .catch((err) => {
           setErrorMessage(err.response.data);
@@ -78,12 +78,12 @@ const Login = () => {
             setIs2FA(true);
             console.log(res);
           } else {
-            localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
-            router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
+            localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.id);
+            router.push(`${URL_PATHS.PROFILE}/${res.data.id}`);
           }
         })
         .catch((err) => {
-          setErrorMessage(err.response.data);
+          setErrorMessage(err);
           setShowError(true);
         });
     }
