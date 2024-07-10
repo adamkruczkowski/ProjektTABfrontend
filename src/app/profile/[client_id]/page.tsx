@@ -61,15 +61,7 @@ const ClientProfile = ({ params }: ClientProfileParams) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4 justify-center m-8">
-          <Button variant="solid" color="primary" className="self-center">
-            <p className="text-white font-bold">Wyświetl wszystkie przelewy</p>
-          </Button>
-          <p className="text-center">
-            Aby wykonać przelew wejdź na konto bankowe z którego chcesz wykonać
-            przelew
-          </p>
-        </div>
+
         <div className="my-5">
           <h2 className="text-center text-lg font-bold">Konta bankowe</h2>
           {bankingAccounts.map((ba) => (

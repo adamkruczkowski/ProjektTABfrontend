@@ -55,13 +55,18 @@ const Login = () => {
 
   const handleSubmit = async () => {
     if (is2FA) {
-      console.log(`Sending verification code: ${verificationCode}, Login: ${login}`);
-      MyAxios.post('api/Authentication/verify-code', {
+      console.log(
+        `Sending verification code: ${verificationCode}, Login: ${login}`
+      );
+      MyAxios.post("api/Authentication/verify-code", {
         login,
         code: verificationCode,
       })
         .then((res) => {
-          localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
+          localStorage.setItem(
+            LOCAL_STORAGE.LOGGED_CLIENT_ID,
+            res.data.clientId
+          );
           router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
         })
         .catch((err) => {
@@ -69,7 +74,8 @@ const Login = () => {
           setShowError(true);
         });
     } else {
-      MyAxios.post('api/Authentication/login', {
+      console.log("TEEEEST");
+      MyAxios.post("api/Authentication/login", {
         login,
         password,
       })
@@ -78,8 +84,9 @@ const Login = () => {
             setIs2FA(true);
             console.log(res);
           } else {
-            localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.clientId);
-            router.push(`${URL_PATHS.PROFILE}/${res.data.clientId}`);
+            console.log(res);
+            localStorage.setItem(LOCAL_STORAGE.LOGGED_CLIENT_ID, res.data.id);
+            router.push(`${URL_PATHS.PROFILE}/${res.data.id}`);
           }
         })
         .catch((err) => {

@@ -44,6 +44,7 @@ export interface TranscationType {
   title: string;
   balance_before: number;
   amount: number;
+  createdAt: Date;
   sender: BankingAccountType;
   recipient: BankingAccountType;
 }

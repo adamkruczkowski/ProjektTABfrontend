@@ -6,6 +6,7 @@ interface TransactionItemProps {
   balanceBefore: number;
   amount: number;
   sender: BankingAccountType;
+  createdAt: Date;
   recipient: BankingAccountType;
   userBaNumber: string;
   title: string;
@@ -14,6 +15,7 @@ interface TransactionItemProps {
 const TransactionItem = ({
   balanceBefore,
   amount,
+  createdAt,
   sender,
   recipient,
   userBaNumber,
@@ -27,6 +29,16 @@ const TransactionItem = ({
         <div className="flex flex-row gap-2 items-center">
           <MdArrowOutward size={40} color="red" />
           <div className="flex flex-col">
+            <p>{`${new Date(createdAt).getFullYear()}-${(
+              new Date(createdAt).getMonth() + 1
+            )
+              .toString()
+              .padStart(2, "0")}-${new Date(createdAt).getDate()} / ${new Date(
+              createdAt
+            ).getHours()}:${new Date(createdAt)
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")}`}</p>
             <p className="text-center font-bold text-xs">Kwota:</p>
             <h3 className="font-bold text-xl">{amount.toFixed(2)} zł</h3>
           </div>
@@ -52,8 +64,8 @@ const TransactionItem = ({
         </div>
         <div className="flex flex-col">
           <p className="font-bold text-xs text-center">Przelano do:</p>
-          <h4 className="text-sm">{`${sender.client.name} ${sender.client.surname}`}</h4>
-          <h5 className="text-sm">{sender.number}</h5>
+          <h4 className="text-sm">{`${recipient.client.name} ${recipient.client.surname}`}</h4>
+          <h5 className="text-sm">{recipient.number}</h5>
         </div>
       </div>
     );
@@ -64,6 +76,13 @@ const TransactionItem = ({
       <div className="flex flex-row gap-2 items-center">
         <MdOutlineCallReceived size={40} color="green" />
         <div className="flex flex-col">
+          <p>{`${new Date(createdAt).getFullYear()}-${(
+            new Date(createdAt).getMonth() + 1
+          )
+            .toString()
+            .padStart(2, "0")}-${new Date(createdAt).getDate()} / ${new Date(
+            createdAt
+          ).getHours()}:${new Date(createdAt).getMinutes()}`}</p>
           <p className="text-center font-bold text-xs">Kwota:</p>
           <h3 className="font-bold text-xl">{amount.toFixed(2)} zł</h3>
         </div>

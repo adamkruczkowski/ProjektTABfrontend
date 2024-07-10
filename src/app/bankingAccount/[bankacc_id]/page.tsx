@@ -60,6 +60,7 @@ const BankingAccountPage = ({ params }: BankingAccountPageParams) => {
               key={t.id}
               userBaNumber={bankAccData.number}
               title={t.title}
+              createdAt={t.createdAt}
               balanceBefore={t.balance_before}
               amount={t.amount}
               sender={t.sender}

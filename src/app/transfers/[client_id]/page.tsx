@@ -10,7 +10,6 @@ import {
   Input,
   Select,
   SelectItem,
-
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { LOCAL_STORAGE, URL_PATHS } from "@/constants/enums";
@@ -23,8 +22,11 @@ interface TransfersParams {
 const Transfer = ({ params }: TransfersParams) => {
   const { client_id } = params;
   const [clientData, setClientData] = useState<ClientDataType | null>(null);
-  const [bankingAccounts, setBankingAccounts] = useState<BankingAccountSimpleType[]>([]);
-  const [selectedAccount, setSelectedAccount] = useState<BankingAccountSimpleType | null>(null);
+  const [bankingAccounts, setBankingAccounts] = useState<
+    BankingAccountSimpleType[]
+  >([]);
+  const [selectedAccount, setSelectedAccount] =
+    useState<BankingAccountSimpleType | null>(null);
   const [title, setTitle] = useState<string>("");
   const [recipientBAId, setRecipientBAId] = useState<string>("");
   const [balanceBefore, setBalanceBefore] = useState<string>("");
@@ -35,9 +37,6 @@ const Transfer = ({ params }: TransfersParams) => {
   const [showError, setShowError] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const router = useRouter();
-
-
-
 
   const resetHandler = () => {
     setBalanceBefore("");
@@ -79,7 +78,9 @@ const Transfer = ({ params }: TransfersParams) => {
   }, [client_id]);
 
   const handleAccountChange = (selectedAccountNumber: string) => {
-    const account = bankingAccounts.find((acc) => acc.number === selectedAccountNumber);
+    const account = bankingAccounts.find(
+      (acc) => acc.number === selectedAccountNumber
+    );
     if (account) {
       setSelectedAccount(account);
       setBalanceBefore(account.amount.toString()); // Ustawiamy balanceBefore jako amount wybranego konta
@@ -101,7 +102,9 @@ const Transfer = ({ params }: TransfersParams) => {
     setErrorMessage(""); // Wyczyszczenie komunikatu o błędzie
   };
 
-  const handleRecipientBAIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRecipientBAIdChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRecipientBAId(e.target.value);
     setShowError(false); // Resetowanie błędu przy zmianie odbiorcy
     setErrorMessage(""); // Wyczyszczenie komunikatu o błędzie
@@ -113,8 +116,14 @@ const Transfer = ({ params }: TransfersParams) => {
     const parsedBalanceBefore = parseFloat(balanceBefore.toString());
     const isAmountValid = !isNaN(parsedAmount) && isFinite(parsedAmount);
 
-    if (!isAmountValid || parsedAmount <= 0 || parsedAmount > parsedBalanceBefore) {
-      setErrorMessage("Podana kwota musi być liczbą większą od 0 i nie większą niż stan konta.");
+    if (
+      !isAmountValid ||
+      parsedAmount <= 0 ||
+      parsedAmount > parsedBalanceBefore
+    ) {
+      setErrorMessage(
+        "Podana kwota musi być liczbą większą od 0 i nie większą niż stan konta."
+      );
       setShowError(true);
       return;
     }
@@ -127,7 +136,7 @@ const Transfer = ({ params }: TransfersParams) => {
       amount: parsedAmount,
       title,
       sender_BAid: senderBAId,
-      recipient_BAId: recipientBAId
+      recipient_BAId: recipientBAId,
     })
       .then((res) => {
         setShowSuccessMessage(true);
@@ -151,12 +160,15 @@ const Transfer = ({ params }: TransfersParams) => {
             <h3 className="font-bold text-xl">Utwórz nowy przelew</h3>
           </div>
         </div>
-        <Card style={{ width: '90%', margin: '10px auto' }}>
+        <Card style={{ width: "90%", margin: "10px auto" }}>
           <CardBody>
             <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: "10px" }}>
                 <h1 className="font-bold text-xl">Wybierz konto</h1>
-                <Select className="max-w-xs" onChange={(e) => handleAccountChange(e.target.value)}>
+                <Select
+                  className="max-w-xs"
+                  onChange={(e) => handleAccountChange(e.target.value)}
+                >
                   {bankingAccounts.map((account) => (
                     <SelectItem key={account.number} value={account.number}>
                       {account.number}
@@ -167,7 +179,7 @@ const Transfer = ({ params }: TransfersParams) => {
 
               {selectedAccount && (
                 <>
-                  <div style={{ marginBottom: '10px' }}>
+                  <div style={{ marginBottom: "10px" }}>
                     <p>Saldo konta:</p>
                     <Input
                       isReadOnly
@@ -180,7 +192,7 @@ const Transfer = ({ params }: TransfersParams) => {
                 </>
               )}
 
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: "10px" }}>
                 <Input
                   type="text"
                   placeholder="Kwota przelewu"
@@ -190,7 +202,7 @@ const Transfer = ({ params }: TransfersParams) => {
                   fullWidth
                 />
               </div>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: "10px" }}>
                 <Input
                   type="text"
                   placeholder="Tytuł przelewu"
@@ -200,7 +212,7 @@ const Transfer = ({ params }: TransfersParams) => {
                   fullWidth
                 />
               </div>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: "10px" }}>
                 <Input
                   type="text"
                   placeholder="Identyfikator konta odbiorcy"
@@ -211,57 +223,67 @@ const Transfer = ({ params }: TransfersParams) => {
                 />
               </div>
 
-
-
               <Button
                 variant="solid"
                 type="submit"
                 color="primary"
                 disabled={loading}
-                style={{ width: '100%', marginBottom: '10px' }}
+                style={{ width: "100%", marginBottom: "10px" }}
               >
-                {loading ? "Wysyłanie..." : <p className="text-white font-bold">Wyślij przelew</p>}
+                {loading ? (
+                  "Wysyłanie..."
+                ) : (
+                  <p className="text-white font-bold">Wyślij przelew</p>
+                )}
               </Button>
 
               {showError && (
-                <div style={{ color: "red", fontSize: "14px", marginTop: "10px" }}>
+                <div
+                  style={{ color: "red", fontSize: "14px", marginTop: "10px" }}
+                >
                   {errorMessage}
                 </div>
               )}
 
               {showSuccessMessage && (
-                <div style={{ color: "white", fontSize: "14px", marginTop: "10px", display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                  <Button
+                <div
+                  style={{
+                    color: "white",
+                    fontSize: "14px",
+                    marginTop: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "10px",
+                  }}
+                >
+                  {/* <Button
                     variant="solid"
                     type="submit"
                     onClick={handleReturnToProfile}
                     style={{ flex: 1 }}
                   >
                     <p className="text-white font-bold">Powrót do profilu</p>
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="solid"
                     type="submit"
                     onClick={resetHandler}
                     style={{ flex: 1 }}
                   >
-                    <p className="text-white font-bold">Wyślij kolejny przelew</p>
+                    <p className="text-white font-bold">
+                      Wyślij kolejny przelew
+                    </p>
                   </Button>
                 </div>
-
-
-
-
               )}
             </form>
           </CardBody>
-        </Card >
+        </Card>
       </>
     );
   }
 
   return <div>Loading...</div>;
-
 };
 
 export default Transfer;
