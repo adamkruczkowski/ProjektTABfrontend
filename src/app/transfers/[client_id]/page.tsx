@@ -169,11 +169,13 @@ const Transfer = ({ params }: TransfersParams) => {
                   className="max-w-xs"
                   onChange={(e) => handleAccountChange(e.target.value)}
                 >
-                  {bankingAccounts.map((account) => (
-                    <SelectItem key={account.number} value={account.number}>
-                      {account.number}
-                    </SelectItem>
-                  ))}
+                  {bankingAccounts
+                    .filter((ba) => !ba.blocked)
+                    .map((account) => (
+                      <SelectItem key={account.number} value={account.number}>
+                        {account.number}
+                      </SelectItem>
+                    ))}
                 </Select>
               </div>
 
