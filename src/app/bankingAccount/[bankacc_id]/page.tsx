@@ -7,7 +7,7 @@ import {
 } from "@/app/lib/interfaces";
 import BankingAccount from "@/components/profile/BankingAccount";
 import TransactionItem from "@/components/transfers/TransactionItem";
-import { Spinner } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 interface BankingAccountPageParams {
@@ -37,6 +37,20 @@ const BankingAccountPage = ({ params }: BankingAccountPageParams) => {
     setLoadingPage(false);
   }, [bankAccData]);
 
+  const handleDownload = async () => {
+    window.location.href = `https://localhost:7171/api/Transactions/GeneratePDF/${bankacc_id}`;
+    try {
+      const response = await MyAxios.get(
+        `api/Transactions/GeneratePDF/${bankacc_id}`
+      );
+      if (!response.status) {
+        throw new Error("Network response was not ok");
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
   if (loadingPage) {
     return <Spinner />;
   }
@@ -51,6 +65,9 @@ const BankingAccountPage = ({ params }: BankingAccountPageParams) => {
           blocked={bankAccData.blocked}
           amount={bankAccData.amount}
         />
+        <Button color="default" onPress={handleDownload} variant="flat">
+          Pobierz wyciąg z tego konta
+        </Button>
         <h2 className="text-xl font-bold text-center mt-4">
           Historia transakcji
         </h2>

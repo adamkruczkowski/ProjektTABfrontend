@@ -87,7 +87,7 @@ const Header = () => {
                 {COMMON.LOGIN}
               </Button>
             </NavbarItem>
-            <NavbarItem>
+            {/* <NavbarItem>
               <Button
                 as={Link}
                 color="primary"
@@ -96,7 +96,7 @@ const Header = () => {
               >
                 {COMMON.SIGNUP}
               </Button>
-            </NavbarItem>
+            </NavbarItem> */}
           </>
         )}
         {localStorage.getItem(LOCAL_STORAGE.LOGGED_CLIENT_ID) && (
