@@ -86,9 +86,21 @@ const Login = () => {
           }
         })
         .catch((err) => {
-          setErrorMessage(err);
+          let errorResponse = "An unknown error occurred";
+        
+          if (err?.response?.status === 401) {
+            if (err?.response?.data === "Twoje konto zostało zablokowane") {
+              errorResponse = "Twoje konto zostało zablokowane skontaktuj sie z administratorem";
+            }
+          } else if (err?.response?.status === 400) {
+            if (err?.response?.data?.includes("Niepoprawne hasło")) {
+              errorResponse = err?.response?.data || "Wrong credentials";
+            }
+          } 
+        
+          setErrorMessage(errorResponse);
           setShowError(true);
-        });
+        });  
     }
   };
 
@@ -99,11 +111,11 @@ const Login = () => {
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col gap-4 py-4">
-        {showError && (
-          <Snippet symbol={""} disableCopy hideCopyButton color="danger">
-            {errorMessage}
-          </Snippet>
-        )}
+      {showError && (
+        <Snippet symbol={""} disableCopy hideCopyButton color="danger">
+          {errorMessage}
+        </Snippet>
+      )}
         {!is2FA ? (
           <>
             <Input
